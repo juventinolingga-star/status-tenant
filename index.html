@@ -12,13 +12,8 @@
         padding: 20px;
         background: #f8f9fa;
       }
-      h2 {
-        text-align: center;
-        color: #333;
-      }
-      label {
-        font-weight: 600;
-      }
+      h2 { text-align: center; color: #333; }
+      label { font-weight: 600; }
       input, select, button {
         width: 100%;
         margin-top: 6px;
@@ -35,9 +30,7 @@
         font-weight: bold;
         transition: 0.2s;
       }
-      button:hover {
-        background-color: #0056b3;
-      }
+      button:hover { background-color: #0056b3; }
       #statusMsg {
         display: none;
         text-align: center;
@@ -77,47 +70,41 @@
     </select>
 
     <button id="submit">Kirim Data</button>
-
     <p id="statusMsg">✅ Data berhasil dikirim ke spreadsheet!</p>
 
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd59wDoA8q_vXa_ZBQiriYZrFM83fJcQfPSs11aiH_JGctEwsH7dIHu22Ro0bXWA5b/exec";
+    <script>
+      // Ganti link di bawah dengan URL Web App kamu (yang pakai /exec)
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd59wDoA8q_vXa_ZBQiriYZrFM83fJcQfPSs11aiH_JGctEwsH7dIHu22Ro0bXWA5b/exec";
 
-document.getElementById('submit').onclick = async () => {
-  const data = {
-    name: document.getElementById('name').value,
-    ready: document.getElementById('ready').value,
-    status: document.getElementById('status').value,
-    antrian: document.getElementById('antrian').value
-  };
+      document.getElementById('submit').onclick = async () => {
+        const data = {
+          name: document.getElementById('name').value,
+          ready: document.getElementById('ready').value,
+          status: document.getElementById('status').value,
+          antrian: document.getElementById('antrian').value
+        };
 
-  if (!data.name || !data.ready || !data.status || !data.antrian) {
-    alert("⚠️ Harap isi semua kolom sebelum mengirim.");
-    return;
-  }
+        if (!data.name || !data.ready || !data.status || !data.antrian) {
+          alert("⚠️ Harap isi semua kolom sebelum mengirim.");
+          return;
+        }
 
-  try {
-    const res = await fetch(SCRIPT_URL + "?t=" + new Date().getTime(), { // tambahkan timestamp
-      method: 'POST',
-      mode: 'no-cors', // biar gak diblokir CORS
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+        try {
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
 
-    // karena mode: 'no-cors', kita gak bisa baca res.json()
-    // jadi kita asumsikan sukses kalau gak error di fetch
-    document.getElementById('statusMsg').style.display = 'block';
-    document.getElementById('submit').disabled = true;
-    setTimeout(() => location.reload(), 2000);
-    
-  } catch (err) {
-    alert("⚠️ Gagal mengirim data. Pastikan koneksi internet stabil.");
-    console.error(err);
-  }
-};
-</script>
+          document.getElementById('statusMsg').style.display = 'block';
+          document.getElementById('submit').disabled = true;
+          setTimeout(() => location.reload(), 2000);
+        } catch (err) {
+          alert("⚠️ Gagal mengirim data. Pastikan koneksi internet stabil.");
+          console.error(err);
+        }
+      };
+    </script>
   </body>
 </html>
-
-
-
