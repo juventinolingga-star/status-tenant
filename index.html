@@ -5,46 +5,17 @@
     <title>Status Tenant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      body {
-        font-family: 'Segoe UI', sans-serif;
-        max-width: 420px;
-        margin: 30px auto;
-        padding: 20px;
-        background: #f8f9fa;
-      }
-      h2 { text-align: center; color: #333; }
-      label { font-weight: 600; }
-      input, select, button {
-        width: 100%;
-        margin-top: 6px;
-        margin-bottom: 14px;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 15px;
-      }
-      button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        font-weight: bold;
-        transition: 0.2s;
-      }
-      button:hover { background-color: #0056b3; }
-      #statusMsg {
-        display: none;
-        text-align: center;
-        font-weight: bold;
-        color: green;
-      }
+      body { font-family: sans-serif; max-width: 400px; margin: 30px auto; padding: 20px; background: #f8f9fa; }
+      input, select, button { width: 100%; margin-top: 5px; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+      button { background: #007bff; color: white; border: none; font-weight: bold; }
+      button:hover { background: #0056b3; }
+      #statusMsg { display: none; text-align: center; color: green; font-weight: bold; }
     </style>
   </head>
   <body>
     <h2>Form Status Tenant</h2>
-
     <label>Nama Tenant:</label>
     <input id="name" placeholder="Nama Anda" required>
-
     <label>Kategori Ready:</label>
     <select id="ready" required>
       <option value="">-- Pilih --</option>
@@ -52,7 +23,6 @@
       <option value="Minuman">Minuman</option>
       <option value="Jajan">Jajan</option>
     </select>
-
     <label>Status:</label>
     <select id="status" required>
       <option value="">-- Pilih --</option>
@@ -60,7 +30,6 @@
       <option value="Belum buka">Belum buka</option>
       <option value="Opsional">Opsional</option>
     </select>
-
     <label>Jumlah Antrian:</label>
     <select id="antrian" required>
       <option value="">-- Pilih --</option>
@@ -68,12 +37,10 @@
       <option value="Tidak terlalu banyak">Tidak terlalu banyak</option>
       <option value="Sepi / Kosong">Sepi / Kosong</option>
     </select>
-
     <button id="submit">Kirim Data</button>
     <p id="statusMsg">✅ Data berhasil dikirim ke spreadsheet!</p>
 
     <script>
-      // Ganti link di bawah dengan URL Web App kamu (yang pakai /exec)
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd59wDoA8q_vXa_ZBQiriYZrFM83fJcQfPSs11aiH_JGctEwsH7dIHu22Ro0bXWA5b/exec";
 
       document.getElementById('submit').onclick = async () => {
@@ -85,23 +52,26 @@
         };
 
         if (!data.name || !data.ready || !data.status || !data.antrian) {
-          alert("⚠️ Harap isi semua kolom sebelum mengirim.");
+          alert("⚠️ Lengkapi semua kolom dulu!");
           return;
         }
 
         try {
-          await fetch(SCRIPT_URL, {
+          const res = await fetch(SCRIPT_URL, {
             method: "POST",
-            mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
           });
-
-          document.getElementById('statusMsg').style.display = 'block';
-          document.getElementById('submit').disabled = true;
-          setTimeout(() => location.reload(), 2000);
+          const result = await res.json();
+          if (result.status === "success") {
+            document.getElementById('statusMsg').style.display = "block";
+            document.getElementById('submit').disabled = true;
+            setTimeout(() => location.reload(), 2000);
+          } else {
+            alert("❌ Gagal: " + result.message);
+          }
         } catch (err) {
-          alert("⚠️ Gagal mengirim data. Pastikan koneksi internet stabil.");
+          alert("⚠️ Gagal kirim data (cek koneksi atau izin deploy).");
           console.error(err);
         }
       };
