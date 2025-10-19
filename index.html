@@ -1,80 +1,85 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="utf-8">
-    <title>Status Tenant</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      body { font-family: sans-serif; max-width: 400px; margin: 30px auto; padding: 20px; background: #f8f9fa; }
-      input, select, button { width: 100%; margin-top: 5px; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
-      button { background: #007bff; color: white; border: none; font-weight: bold; }
-      button:hover { background: #0056b3; }
-      #statusMsg { display: none; text-align: center; color: green; font-weight: bold; }
-    </style>
-  </head>
-  <body>
-    <h2>Form Status Tenant</h2>
-    <label>Nama Tenant:</label>
-    <input id="name" placeholder="Nama Anda" required>
-    <label>Kategori Ready:</label>
-    <select id="ready" required>
-      <option value="">-- Pilih --</option>
-      <option value="Makanan">Makanan</option>
-      <option value="Minuman">Minuman</option>
-      <option value="Jajan">Jajan</option>
-    </select>
-    <label>Status:</label>
-    <select id="status" required>
-      <option value="">-- Pilih --</option>
-      <option value="Sudah buka">Sudah buka</option>
-      <option value="Belum buka">Belum buka</option>
-      <option value="Opsional">Opsional</option>
-    </select>
-    <label>Jumlah Antrian:</label>
-    <select id="antrian" required>
-      <option value="">-- Pilih --</option>
-      <option value="Banyak">Banyak</option>
-      <option value="Tidak terlalu banyak">Tidak terlalu banyak</option>
-      <option value="Sepi / Kosong">Sepi / Kosong</option>
-    </select>
-    <button id="submit">Kirim Data</button>
-    <p id="statusMsg">✅ Data berhasil dikirim ke spreadsheet!</p>
+<head>
+  <meta charset="utf-8">
+  <title>Status Tenant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; max-width: 400px; margin: 30px auto; padding: 20px; background: #f8f9fa; }
+    input, select, button { width: 100%; margin-top: 5px; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    button { background: #007bff; color: white; border: none; font-weight: bold; }
+    button:hover { background: #0056b3; }
+    #statusMsg { display: none; text-align: center; color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Form Status Tenant</h2>
 
-    <script>
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd59wDoA8q_vXa_ZBQiriYZrFM83fJcQfPSs11aiH_JGctEwsH7dIHu22Ro0bXWA5b/exec";
+  <label>Nama Tenant:</label>
+  <input id="name" placeholder="Nama Anda">
 
-      document.getElementById('submit').onclick = async () => {
-        const data = {
-          name: document.getElementById('name').value,
-          ready: document.getElementById('ready').value,
-          status: document.getElementById('status').value,
-          antrian: document.getElementById('antrian').value
-        };
+  <label>Kategori Ready:</label>
+  <select id="ready">
+    <option value="">-- Pilih --</option>
+    <option value="Makanan">Makanan</option>
+    <option value="Minuman">Minuman</option>
+    <option value="Jajan">Jajan</option>
+  </select>
 
-        if (!data.name || !data.ready || !data.status || !data.antrian) {
-          alert("⚠️ Lengkapi semua kolom dulu!");
-          return;
-        }
+  <label>Status:</label>
+  <select id="status">
+    <option value="">-- Pilih --</option>
+    <option value="Sudah buka">Sudah buka</option>
+    <option value="Belum buka">Belum buka</option>
+    <option value="Opsional">Opsional</option>
+  </select>
 
-        try {
-          const res = await fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-          });
-          const result = await res.json();
-          if (result.status === "success") {
-            document.getElementById('statusMsg').style.display = "block";
-            document.getElementById('submit').disabled = true;
-            setTimeout(() => location.reload(), 2000);
-          } else {
-            alert("❌ Gagal: " + result.message);
-          }
-        } catch (err) {
-          alert("⚠️ Gagal kirim data (cek koneksi atau izin deploy).");
-          console.error(err);
-        }
+  <label>Jumlah Antrian:</label>
+  <select id="antrian">
+    <option value="">-- Pilih --</option>
+    <option value="Banyak">Banyak</option>
+    <option value="Tidak terlalu banyak">Tidak terlalu banyak</option>
+    <option value="Sepi / Kosong">Sepi / Kosong</option>
+  </select>
+
+  <button id="submit">Kirim Data</button>
+  <p id="statusMsg">✅ Data berhasil dikirim ke spreadsheet!</p>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd59wDoA8q_vXa_ZBQiriYZrFM83fJcQfPSs11aiH_JGctEwsH7dIHu22Ro0bXWA5b/exec";
+
+    document.getElementById('submit').onclick = async () => {
+      const data = {
+        name: document.getElementById('name').value,
+        ready: document.getElementById('ready').value,
+        status: document.getElementById('status').value,
+        antrian: document.getElementById('antrian').value
       };
-    </script>
-  </body>
+
+      if (!data.name || !data.ready || !data.status || !data.antrian) {
+        alert("⚠️ Lengkapi semua kolom dulu!");
+        return;
+      }
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.status === "success") {
+          document.getElementById('statusMsg').style.display = "block";
+          document.getElementById('submit').disabled = true;
+          setTimeout(() => location.reload(), 2000);
+        } else {
+          alert("❌ Gagal: " + result.message);
+        }
+      } catch (err) {
+        alert("⚠️ Gagal kirim data (cek koneksi atau izin deploy).");
+        console.error(err);
+      }
+    };
+  </script>
+</body>
 </html>
